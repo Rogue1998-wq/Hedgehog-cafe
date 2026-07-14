@@ -16,6 +16,29 @@ export const Route = createFileRoute("/visit")({
 
 function VisitPage() {
   const [sent, setSent] = useState(false);
+
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const form = new FormData(e.currentTarget);
+
+  const message = `Hi! I'd like to reserve a table.
+
+Name: ${form.get("name")}
+Phone: ${form.get("phone")}
+Date: ${form.get("date")}
+Time: ${form.get("time")}
+Guests: ${form.get("guests")}
+Occasion: ${form.get("occasion")}
+Note: ${form.get("note")}`;
+
+  window.open(
+    `https://wa.me/919781160873?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
+
+  setSent(true);
+};
   return (
     <div className="min-h-screen bg-background">
       <SiteNav />
@@ -59,33 +82,32 @@ function VisitPage() {
           </div>
 
           <form
-            onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+            onSubmit={handleSubmit}
             className="md:col-span-7 space-y-5 border border-border bg-card p-8"
           >
             <div className="mb-2 text-[11px] uppercase tracking-[0.22em] text-accent">Reserve a Table</div>
             <h2 className="font-display text-3xl text-primary">Tell us when you'd like to visit.</h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Name"><input required className="input" /></Field>
-              <Field label="Phone"><input required type="tel" className="input" /></Field>
-              <Field label="Date"><input required type="date" className="input" /></Field>
-              <Field label="Time"><input required type="time" className="input" /></Field>
+              <Field label="Name"><input required id="name" name="name" className="input" /></Field>
+              <Field label="Phone"><input required type="tel" id="phone" name="phone" className="input" /></Field>
+              <Field label="Date"><input required type="date" id="date" name="date" className="input" /></Field>
+              <Field label="Time"><input required type="time" id="time" name="time" className="input" /></Field>
               <Field label="Guests">
-                <select className="input" defaultValue="2">
+                <select id="guests" name="guests" className="input" defaultValue="2">
                   {[1,2,3,4,5,6,7,8].map(n => <option key={n}>{n}</option>)}
                   <option>9+</option>
                 </select>
               </Field>
-              <Field label="Occasion (optional)"><input className="input" placeholder="Birthday, date night…" /></Field>
+              <Field label="Occasion (optional)"><input id="occasion" name="occasion" className="input" placeholder="Birthday, date night…" /></Field>
             </div>
             <Field label="A note for us (optional)">
-              <textarea rows={3} className="input" placeholder="Window seat, dog joining, allergies…" />
+              <textarea rows={3} id="note" name="note" className="input" placeholder="Window seat, dog joining, allergies…" />
             </Field>
             <button
               type="submit"
-              disabled={sent}
-              className="w-full rounded-none border border-primary bg-primary px-6 py-3 text-xs uppercase tracking-[0.22em] text-primary-foreground transition hover:bg-transparent hover:text-primary disabled:cursor-default disabled:opacity-70"
+              className="w-full rounded-none border border-primary bg-primary px-6 py-3 text-xs uppercase tracking-[0.22em] text-primary-foreground transition hover:bg-transparent hover:text-primary"
             >
-              {sent ? "Request sent — we'll call to confirm" : "Request Reservation"}
+              {sent ? "Continue On WhatsApp" : "Request Reservation"}
             </button>
             <p className="text-xs text-muted-foreground">Reservations are confirmed by phone. For same-day bookings please call us at 0172 473 0478.</p>
           </form>
